@@ -2,17 +2,13 @@ Vue.component("MoviePosters", {
   props: ["movies", "showButton"],
   template: `
   <div class="container">
-        <draggable item-key='id' class='row'>
-            <li class="col-xl-3 col-lg-3 col-md-6 col-sm-12 d-flex justify-content-center" id="index+1" v-for="(movie, index) in movies" :key="index" v-bind:class="index" v-if="index < 10">
-             
-            
-            <div class="card" style="width: 18rem"> 
-           
+        <draggable item-key='id' class='row' v-model="movies">
+            <li class="col-xl-3 col-lg-3 col-md-6 col-sm-12 d-flex justify-content-center"  v-for="movie in movies" :key="movie.title">
+            <div class="card" style="width: 18rem">          
             <img class="card-img-top" :src="movie.poster" alt="CardImageMoviePoster" />
             <div class="card-body">
               <h5 class="card-title">{{movie.title}}</h5>
             </div>      
-              <p class="card-text" draggable="false">{{index+1}}</p>
             
             </li>
         </draggable>
@@ -20,17 +16,13 @@ Vue.component("MoviePosters", {
           <div class="d-flex justify-content-center">
             <button type="button" class="btn btn-success mt-3" v-on:click="saveOrder">Valider le vote</button>
           </div>
-  </div>
-
-  
+  </div>  
 `,
   methods: {
     saveOrder() {
-      const moviesOrder = [...document.querySelectorAll("#app li p")]
-        .map((li) => li.textContent)
-        .join(", ");
-      localStorage.setItem("moviesOrder", moviesOrder);
-      console.log(moviesOrder);
+      /* localStorage.setItem("moviesOrder", this.movies);
+      localStorage.getItem("moviesOrder")
+      console.log(moviesOrder); */
     },
   },
 });
@@ -91,10 +83,11 @@ new Vue({
           },
         })
         .then((response) => {
-          this.movies = response.data.results.slice(0, 10).map((movie) => ({
-            poster: "https://image.tmdb.org/t/p/w500" + movie.poster_path,
-            title: movie.title,
-          }));
+          this.movies = response.data.results.slice(0, 10).map((x) => 
+            {return{ poster: "https://image.tmdb.org/t/p/w500" + x.poster_path,
+            title: x.title,}}
+          );
+          console.log(this.movies)
         })
         .catch((error) => {
           console.error("Error fetching movies:", error);
