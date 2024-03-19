@@ -1,5 +1,5 @@
-Vue.component('MoviePosters', {
-  props: ['movies', 'showButton'],
+Vue.component("MoviePosters", {
+  props: ["movies", "showButton"],
   template: `
   <div class="container">
         <draggable item-key='id' class='row'>
@@ -26,71 +26,81 @@ Vue.component('MoviePosters', {
 `,
   methods: {
     saveOrder() {
-      const moviesOrder = [...document.querySelectorAll('#app li p')].map(li => li.textContent)
-        .join(', ');
-      localStorage.setItem('moviesOrder', moviesOrder);
-      console.log(moviesOrder)
-    }
-  }
-})
-
-
-
-
-
+      const moviesOrder = [...document.querySelectorAll("#app li p")]
+        .map((li) => li.textContent)
+        .join(", ");
+      localStorage.setItem("moviesOrder", moviesOrder);
+      console.log(moviesOrder);
+    },
+  },
+});
 
 new Vue({
-  el: '#app',
+  el: "#app",
   data: {
     categories: [],
-    movies: []
+    movies: [],
   },
   mounted() {
     this.getAllCategories();
   },
   methods: {
     getAllCategories() {
-      let url = 'https://api.themoviedb.org/3/genre/movie/list'
+      let url = "https://api.themoviedb.org/3/genre/movie/list";
       axios
         .get(url, {
           params: {
-            api_key: 'b73ad2eaa4501675efa5fdf8edb150d9'
-          }
+            api_key: "b73ad2eaa4501675efa5fdf8edb150d9",
+          },
         })
-        .then(response => {
-          this.categories = response.data.genres.map(category => ({
+        .then((response) => {
+          this.categories = response.data.genres.map((category) => ({
             id: category.id,
-            name: category.name.replace('Adventure', 'Aventure').replace('Animation', 'Animation').replace('Comedy', 'Comédie').replace('Documentary', 'Documentaire').replace('Drama', 'Drame').replace('Family', 'Familial').replace('Fantasy', 'Fantastique').replace('History', 'Histoire').replace('Horror', 'Horreur').replace('Music', 'Musical').replace('Mystery', 'Mystère').replace('Science Fiction', 'Science-fiction').replace('War', 'Guerre').replace('TV Movie', 'Téléfilm')
+            name: category.name
+              .replace("Adventure", "Aventure")
+              .replace("Animation", "Animation")
+              .replace("Comedy", "Comédie")
+              .replace("Documentary", "Documentaire")
+              .replace("Drama", "Drame")
+              .replace("Family", "Familial")
+              .replace("Fantasy", "Fantastique")
+              .replace("History", "Histoire")
+              .replace("Horror", "Horreur")
+              .replace("Music", "Musical")
+              .replace("Mystery", "Mystère")
+              .replace("Science Fiction", "Science-fiction")
+              .replace("War", "Guerre")
+              .replace("TV Movie", "Téléfilm"),
           }));
-        })
+        });
     },
     getMoviesByCategory(category) {
-      console.log(category)
+      console.log(category);
       this.movies = [];
-      const url = 'https://api.themoviedb.org/3/discover/movie';
+      const url = "https://api.themoviedb.org/3/discover/movie";
       axios
         .get(url, {
           params: {
-            api_key: 'b73ad2eaa4501675efa5fdf8edb150d9',
+            api_key: "b73ad2eaa4501675efa5fdf8edb150d9",
             with_genres: category.value,
-            sort_by: 'vote_count.desc',
+            sort_by: "vote_count.desc",
             include_adult: false,
             include_video: false,
-            language: 'fr-FR',
+            language: "fr-FR",
             page: 1,
-          }
+          },
         })
-        .then(response => {
-          this.movies = response.data.results.slice(0, 10).map(movie => ({
-            poster: 'https://image.tmdb.org/t/p/w500' + movie.poster_path,
+        .then((response) => {
+          this.movies = response.data.results.slice(0, 10).map((movie) => ({
+            poster: "https://image.tmdb.org/t/p/w500" + movie.poster_path,
             title: movie.title,
           }));
         })
-        .catch(error => {
-          console.error('Error fetching movies:', error);
+        .catch((error) => {
+          console.error("Error fetching movies:", error);
         });
     },
-  }
-})
+  },
+});
 
 
